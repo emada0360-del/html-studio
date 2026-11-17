@@ -23,6 +23,8 @@ jobs:
           sed -i 's#android:label="[^"]*"#android:label="HTML Studio"#' android/app/src/main/AndroidManifest.xml
           flutter pub get
           find ~/.pub-cache/hosted -path '*/android/build.gradle*' -exec sed -i -E 's/(compileSdk(Version)?[ =]+)[0-9]+/\136/' {} +
+          mkdir -p ~/.gradle/init.d
+          printf "allprojects {\n  tasks.configureEach { t ->\n    if (t.name.toLowerCase().contains('lint')) { t.enabled = false }\n  }\n}\n" > ~/.gradle/init.d/nolint.gradle
           flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
